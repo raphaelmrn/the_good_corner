@@ -36,3 +36,13 @@ readMessages(messages);
 
 const notification1: Notif = { at: 1694011133, state: "unread" };
 const notification2: Notif = { at: 1694011532, state: "read" };
+
+function readNotificationOrMessage(
+	notificationOrMessage: Notif | Message,
+): void {
+	if ("state" in notificationOrMessage) {
+		notificationOrMessage.state = "read";
+	} else {
+		notificationOrMessage.isRead = true;
+	}
+}
