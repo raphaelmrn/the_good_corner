@@ -31,6 +31,23 @@ app.get("/ads", (req, res) => {
 	});
 });
 
+app.get("/ads/:id", (req, res) => {
+	const id = Number(req.params.id);
+	db.all("SELECT * FROM ad WHERE id=?", id, (err, rows) => {
+		if (err) return res.status(500).send(err);
+		if (!rows.length) return res.status(404).send(err);
+		return res.json(rows);
+	});
+});
+
+app.delete("/ads/:id", (req, res) => {
+	const id = Number(req.params.id);
+	db.run("DELETE FROM ad WHERE id=?", id, (err) => {
+		if (err) return res.status(500).send(err);
+		return res.status(204).send();
+	});
+});
+
 app.post("/ads", (req, res) => {
 	const { title, description, owner, price, createdAt, picture, location } =
 		req.body;
