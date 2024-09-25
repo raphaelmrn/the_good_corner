@@ -11,7 +11,7 @@ const port = 3000;
 type Ad = {
 	id: number;
 	title: string;
-	description: string;
+	description?: string;
 	owner: string;
 	price: number;
 	picture: string;
@@ -25,22 +25,33 @@ app.get("/", (req, res) => {
 
 app.get("/ads", (req, res) => {
 	db.all("SELECT * FROM ad", (err, rows) => {
-		res.json(rows);
+		if (err) return res.status(500).send(err);
+		if (!rows.length) return res.status(404).send(err);
+		return res.json(rows);
 	});
 });
 
 app.post("/ads", (req, res) => {
-	db.run(
-		"INSERT INTO ad ('title', 'description', 'owner', 'price', 'createdAt', 'picture', 'location') values ('title', 'description', 'owner', 42, '2024-09-25', 'https://imgur.com', 'Lille')",
-		(err) => {
-			console.log(err);
+	const { title, description, owner, price, createdAt, picture, location } =
+		req.body;
+	const newAd: Omit<Ad, "id"> = {
+		title,
+		description,
+		owner,
+		price,
+		createdAt,
+		picture,
+		location,
+	}; // <- TODO: trouver comment forcer newAd à être une Ad valide au runtime
 
-			res.send("Request received, check the backend terminal");
+	db.run(
+		"INSERT INTO ad ('title', 'description', 'owner', 'price', 'createdAt', 'picture', 'location') values (?, ?, ?, ?, ?, ?, ?)",
+		[title, description, owner, price, createdAt, picture, location],
+		(err) => {
+			if (err) return res.status(500).send(err);
+			return res.status(201).send();
 		},
 	);
-
-	// ads.push(req.body as Ad);
-	// res.send("Request received, check the backend terminal");
 });
 
 app.listen(port, () => {
