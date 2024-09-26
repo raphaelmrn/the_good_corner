@@ -2,6 +2,7 @@ import "reflect-metadata";
 import express from "express";
 import sqlite3 from "sqlite3";
 import { dataSource } from "./config/db";
+import { Ad } from "./entities/Ad";
 
 const db = new sqlite3.Database("./the-good-corner.sqlite");
 
@@ -10,67 +11,60 @@ app.use(express.json());
 
 const port = 3000;
 
-// type Ad = {
-// 	id: number;
-// 	title: string;
-// 	description?: string;
-// 	owner: string;
-// 	price: number;
-// 	picture: string;
-// 	location: string;
-// 	createdAt: string;
-// };
-
 app.get("/", (req, res) => {
 	res.send("Hello World!");
 });
 
-app.get("/ads", (req, res) => {
-	db.all("SELECT * FROM ad", (err, rows) => {
-		if (err) return res.status(500).send(err);
-		if (!rows.length) return res.status(404).send(err);
-		return res.json(rows);
-	});
+app.get("/ads", async (req, res) => {
+	try {
+		const ads = await Ad.find();
+		if (!ads.length) return res.status(404).send("No Ads found");
+		return res.json(ads);
+	} catch (err) {
+		return res.status(500).send(err);
+	}
 });
 
-app.get("/ads/:id", (req, res) => {
+app.get("/ads/:id", async (req, res) => {
 	const id = Number(req.params.id);
-	db.all("SELECT * FROM ad WHERE id=?", id, (err, rows) => {
-		if (err) return res.status(500).send(err);
-		if (!rows.length) return res.status(404).send(err);
-		return res.json(rows);
-	});
+	try {
+		const ad = await Ad.findOneBy({ id });
+		if (!ad) return res.status(404).send("Ad not found");
+		return res.json(ad);
+	} catch (err) {
+		return res.status(500).send(err);
+	}
 });
 
-app.delete("/ads/:id", (req, res) => {
+app.delete("/ads/:id", async (req, res) => {
 	const id = Number(req.params.id);
-	db.run("DELETE FROM ad WHERE id=?", id, (err) => {
-		if (err) return res.status(500).send(err);
+	try {
+		const ad = await Ad.findOneBy({ id });
+		if (!ad) return res.status(404).send("Ad not found");
+		ad.remove();
 		return res.status(204).send();
-	});
+	} catch (err) {
+		return res.status(500).send(err);
+	}
 });
 
 app.post("/ads", (req, res) => {
 	const { title, description, owner, price, createdAt, picture, location } =
 		req.body;
-	// const newAd: Omit<Ad, "id"> = {
-	// 	title,
-	// 	description,
-	// 	owner,
-	// 	price,
-	// 	createdAt,
-	// 	picture,
-	// 	location,
-	// }; // <- TODO: trouver comment forcer newAd à être une Ad valide au runtime
-
-	db.run(
-		"INSERT INTO ad ('title', 'description', 'owner', 'price', 'createdAt', 'picture', 'location') values (?, ?, ?, ?, ?, ?, ?)",
-		[title, description, owner, price, createdAt, picture, location],
-		(err) => {
-			if (err) return res.status(500).send(err);
-			return res.status(201).send();
-		},
-	);
+	try {
+		const ad = new Ad();
+		ad.title = title;
+		ad.description = description;
+		ad.owner = owner;
+		ad.price = price;
+		ad.createdAt = createdAt;
+		ad.picture = picture;
+		ad.location = location;
+		ad.save();
+		return res.status(201).send();
+	} catch (err) {
+		return res.status(500).send(err);
+	}
 });
 
 app.listen(port, async () => {
