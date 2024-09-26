@@ -1,5 +1,7 @@
+import "reflect-metadata";
 import express from "express";
 import sqlite3 from "sqlite3";
+import { dataSource } from "./config/db";
 
 const db = new sqlite3.Database("./the-good-corner.sqlite");
 
@@ -8,16 +10,16 @@ app.use(express.json());
 
 const port = 3000;
 
-type Ad = {
-	id: number;
-	title: string;
-	description?: string;
-	owner: string;
-	price: number;
-	picture: string;
-	location: string;
-	createdAt: string;
-};
+// type Ad = {
+// 	id: number;
+// 	title: string;
+// 	description?: string;
+// 	owner: string;
+// 	price: number;
+// 	picture: string;
+// 	location: string;
+// 	createdAt: string;
+// };
 
 app.get("/", (req, res) => {
 	res.send("Hello World!");
@@ -51,15 +53,15 @@ app.delete("/ads/:id", (req, res) => {
 app.post("/ads", (req, res) => {
 	const { title, description, owner, price, createdAt, picture, location } =
 		req.body;
-	const newAd: Omit<Ad, "id"> = {
-		title,
-		description,
-		owner,
-		price,
-		createdAt,
-		picture,
-		location,
-	}; // <- TODO: trouver comment forcer newAd à être une Ad valide au runtime
+	// const newAd: Omit<Ad, "id"> = {
+	// 	title,
+	// 	description,
+	// 	owner,
+	// 	price,
+	// 	createdAt,
+	// 	picture,
+	// 	location,
+	// }; // <- TODO: trouver comment forcer newAd à être une Ad valide au runtime
 
 	db.run(
 		"INSERT INTO ad ('title', 'description', 'owner', 'price', 'createdAt', 'picture', 'location') values (?, ?, ?, ?, ?, ?, ?)",
@@ -71,6 +73,7 @@ app.post("/ads", (req, res) => {
 	);
 });
 
-app.listen(port, () => {
+app.listen(port, async () => {
+	await dataSource.initialize();
 	console.log(`Example app listening on port ${port}`);
 });
