@@ -3,7 +3,12 @@
 	"version": "1.0.0",
 	"description": "",
 	"scripts": {
-		"start": "ts-node-dev ./src/index.ts"
+		"start": "ts-node-dev ./src/index.ts",
+
+		"data:create": "typeorm-ts-node-commonjs migration:create",
+		"data:generate": "typeorm-ts-node-commonjs migration:generate -d src/config/db.ts",
+		"data:up": "typeorm-ts-node-commonjs migration:run -d src/config/db.ts",
+		"data:down": "typeorm-ts-node-commonjs migration:revert -d src/config/db.ts"
 	},
 	"keywords": [],
 	"author": "",

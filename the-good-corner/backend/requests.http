@@ -1,7 +1,13 @@
 GET http://localhost:3000
 
 ###
+GET http://localhost:3000/categories
+
+###
 GET http://localhost:3000/ads
+
+###
+GET http://localhost:3000/ads?categoryId=2
 
 ###
 GET http://localhost:3000/ads/2
@@ -20,5 +26,6 @@ Content-Type: application/json
 		"price":42,
 		"createdAt":"maintenant",
 		"picture":"https://imgur.com",
-		"location":"Lille"
+		"location":"Lille",
+		"categoryId":2
 }
