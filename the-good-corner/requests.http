@@ -1,16 +1,16 @@
-GET http://localhost:3000
+GET http://localhost:4000
 
 ###
-GET http://localhost:3000/ads
+GET http://localhost:4000/ads
 
 ###
-GET http://localhost:3000/ads/2
+GET http://localhost:4000/ads/2
 
 ###
-DELETE http://localhost:3000/ads/2
+DELETE http://localhost:4000/ads/2
 
 ###
-POST http://localhost:3000/ads
+POST http://localhost:4000/ads
 Content-Type: application/json
 
 {

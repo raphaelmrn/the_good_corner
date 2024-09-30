@@ -10,96 +10,96 @@ import { Category } from "./entities/Category";
 const app = express();
 app.use(express.json());
 
-const port = 3000;
+const port = 4000;
 
 app.get("/", (req, res) => {
-	res.send("Hello World!");
+  res.send("Hello World!");
 });
 
 app.get("/categories", async (req, res) => {
-	try {
-		const categories = await Category.find();
-		if (!categories.length) return res.status(404).send("No Categories found");
-		return res.json(categories);
-	} catch (err) {
-		return res.status(500).send(err);
-	}
+  try {
+    const categories = await Category.find();
+    if (!categories.length) return res.status(404).send("No Categories found");
+    return res.json(categories);
+  } catch (err) {
+    return res.status(500).send(err);
+  }
 });
 
 app.get("/ads", async (req, res) => {
-	const categoryId = Number(req.query.categoryId);
-	let whereClause = {};
-	if (categoryId)
-		whereClause = {
-			category: { id: categoryId },
-		};
-	try {
-		const ads = await Ad.find({
-			relations: {
-				category: true,
-			},
-			where: whereClause,
-		});
-		if (!ads.length) return res.status(404).send("No Ads found");
-		return res.json(ads);
-	} catch (err) {
-		return res.status(500).send(err);
-	}
+  const categoryId = Number(req.query.categoryId);
+  let whereClause = {};
+  if (categoryId)
+    whereClause = {
+      category: { id: categoryId },
+    };
+  try {
+    const ads = await Ad.find({
+      relations: {
+        category: true,
+      },
+      where: whereClause,
+    });
+    if (!ads.length) return res.status(404).send("No Ads found");
+    return res.json(ads);
+  } catch (err) {
+    return res.status(500).send(err);
+  }
 });
 
 app.get("/ads/:id", async (req, res) => {
-	const id = Number(req.params.id);
-	try {
-		const ad = await Ad.findOneBy({ id });
-		if (!ad) return res.status(404).send("Ad not found");
-		return res.json(ad);
-	} catch (err) {
-		return res.status(500).send(err);
-	}
+  const id = Number(req.params.id);
+  try {
+    const ad = await Ad.findOneBy({ id });
+    if (!ad) return res.status(404).send("Ad not found");
+    return res.json(ad);
+  } catch (err) {
+    return res.status(500).send(err);
+  }
 });
 
 app.delete("/ads/:id", async (req, res) => {
-	const id = Number(req.params.id);
-	try {
-		const ad = await Ad.findOneBy({ id });
-		if (!ad) return res.status(404).send("Ad not found");
-		ad.remove();
-		return res.status(204).send();
-	} catch (err) {
-		return res.status(500).send(err);
-	}
+  const id = Number(req.params.id);
+  try {
+    const ad = await Ad.findOneBy({ id });
+    if (!ad) return res.status(404).send("Ad not found");
+    ad.remove();
+    return res.status(204).send();
+  } catch (err) {
+    return res.status(500).send(err);
+  }
 });
 
 app.post("/ads", async (req, res) => {
-	const {
-		title,
-		description,
-		owner,
-		price,
-		createdAt,
-		picture,
-		location,
-		categoryId,
-	} = req.body;
-	try {
-		const ad = new Ad();
-		ad.title = title;
-		ad.description = description;
-		ad.owner = owner;
-		ad.price = price;
-		ad.createdAt = createdAt;
-		ad.picture = picture;
-		ad.location = location;
-		const category = await Category.findOneBy({ id: categoryId });
-		if (category) ad.category = category;
-		ad.save();
-		return res.status(201).send();
-	} catch (err) {
-		return res.status(500).send(err);
-	}
+  const {
+    title,
+    description,
+    owner,
+    price,
+    createdAt,
+    picture,
+    location,
+    categoryId,
+  } = req.body;
+  try {
+    const ad = new Ad();
+    ad.title = title;
+    ad.description = description;
+    ad.owner = owner;
+    ad.price = price;
+    ad.createdAt = createdAt;
+    ad.picture = picture;
+    ad.location = location;
+    const category = await Category.findOneBy({ id: categoryId });
+    if (category) ad.category = category;
+    ad.save();
+    return res.status(201).send();
+  } catch (err) {
+    return res.status(500).send(err);
+  }
 });
 
 app.listen(port, async () => {
-	await dataSource.initialize();
-	console.log(`Example app listening on port ${port}`);
+  await dataSource.initialize();
+  console.log(`Example app listening on port ${port}`);
 });
