@@ -5,5 +5,7 @@ export const dataSource = new DataSource({
   type: "sqlite",
   database: "./wild.sqlite",
   entities: [Ad],
-  synchronize: true,
+  synchronize: false,
+  migrations: ["migrations/*.ts"],
+  migrationsTableName: "migrations",
 });
