@@ -1,41 +1,51 @@
 import {
-	BaseEntity,
-	Column,
-	Entity,
-	ManyToOne,
-	PrimaryGeneratedColumn,
+  BaseEntity,
+  BeforeInsert,
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
 } from "typeorm";
 import { Category } from "./Category";
+import { Tag } from "./Tag";
 
 @Entity()
 export class Ad extends BaseEntity {
-	@PrimaryGeneratedColumn()
-	id!: number;
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-	@Column()
-	title!: string;
+  @Column()
+  title!: string;
 
-	@Column()
-	description?: string;
+  @Column()
+  description?: string;
 
-	@Column()
-	owner!: string;
+  @Column()
+  owner!: string;
 
-	@Column()
-	price!: number;
+  @Column()
+  price!: number;
 
-	@Column()
-	picture!: string;
+  @Column()
+  picture!: string;
 
-	@Column()
-	location!: string;
+  @Column()
+  location!: string;
 
-	@Column()
-	createdAt!: string;
+  @Column()
+  createdAt!: Date;
 
-	@ManyToOne(
-		() => Category,
-		(category) => category.ads,
-	)
-	category!: Category;
+  @BeforeInsert()
+  updateDates() {
+    this.createdAt = new Date();
+  }
+
+  @ManyToOne(() => Category, (category) => category.ads)
+  category!: Category;
+
+  @ManyToMany(() => Tag, (tag) => tag.ads)
+  @JoinTable()
+  tags!: Tag[];
 }

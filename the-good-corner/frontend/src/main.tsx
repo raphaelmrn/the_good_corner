@@ -3,8 +3,9 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import AdDetails from "./pages/AdDetails.tsx";
-import RecentAds from "./components/RecentAds.tsx";
+import AdDetail from "./pages/AdDetail.tsx";
+import RecentAds from "./pages/RecentAds.tsx";
+import AdCreaForm from "./pages/AdCreaForm.tsx";
 
 const router = createBrowserRouter([
   {
@@ -21,7 +22,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/ads/:adId",
-        element: <AdDetails />,
+        element: <AdDetail />,
+      },
+      {
+        path: "/ads/new",
+        element: <AdCreaForm />,
       },
     ],
   },
@@ -29,7 +34,6 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
     <RouterProvider router={router} />
   </StrictMode>
 );

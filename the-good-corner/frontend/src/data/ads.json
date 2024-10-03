@@ -28,11 +28,5 @@
     "name": "Porte-magazine",
     "url": "/ads/porte-magazine",
     "price": 45
-  },
-  {
-    "image": "/images/vaisselier.webp",
-    "name": "Vaisselier",
-    "url": "/ads/vaisselier",
-    "price": 900
   }
 ]

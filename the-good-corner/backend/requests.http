@@ -20,12 +20,12 @@ POST http://localhost:4000/ads
 Content-Type: application/json
 
 {
-		"title":"Toto",
-		"description":"Lorem ipsum",
-		"owner":"Loic",
-		"price":42,
+		"title":"Hello spyro",
+		"description":"un petit dragon",
+		"owner":"gnasty gnorc",
+		"price":1000,
 		"createdAt":"maintenant",
 		"picture":"https://imgur.com",
-		"location":"Lille",
+		"location":"Monde des ouvriers magiques",
 		"categoryId":2
 }
